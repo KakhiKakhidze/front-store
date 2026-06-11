@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "client": "vite",
-    "server": "cd ../backend && npm start",
-    "seed": "cd ../backend && npm run seed",
+    "server": "cd ../back-store && npm start",
+    "seed": "cd ../back-store && npm run seed",
     "build": "vite build",
     "preview": "vite preview"
   },

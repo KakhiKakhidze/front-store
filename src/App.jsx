@@ -28,30 +28,31 @@ import MyProducts from "./pages/MyProducts";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
-  return user ? children : <Navigate to="/login" replace />;
+  return user ? children : <Navigate to="/" replace />;
 }
 
 function RoleProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/" replace />;
   if (allowedRoles.includes(user.role)) return children;
   
   // Default redirection if unauthorized
   if (user.role === 'Supplier') return <Navigate to="/tender-portal" replace />;
-  return <Navigate to="/" replace />;
+  return <Navigate to="/dashboard" replace />;
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Navigate to="/" replace />} />
       <Route
         path="/*"
         element={
           <ProtectedRoute>
             <Layout>
               <Routes>
-                <Route index element={
+                <Route path="dashboard" element={
                   <RoleProtectedRoute allowedRoles={['GM', 'Storekeeper', 'PurchasingOfficer', 'FinanceController', 'DeptHead']}>
                     <Dashboard />
                   </RoleProtectedRoute>

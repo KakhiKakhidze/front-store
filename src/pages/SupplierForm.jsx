@@ -9,9 +9,9 @@ export default function SupplierForm() {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({ name: "", contact_person: "", phone: "", email: "", address: "", lead_time_days: 3, preferred: false });
+  const [form, setForm] = useState({ name: "", contact_person: "", phone: "", email: "", address: "", lead_time_days: 3, preferred: false, username: "", password: "" });
 
-  useEffect(() => { if (isEdit) api.get(`/suppliers/${id}`).then((s) => setForm({ ...s, preferred: Boolean(s.preferred) })); }, [id]);
+  useEffect(() => { if (isEdit) api.get(`/suppliers/${id}`).then((s) => setForm({ ...s, preferred: Boolean(s.preferred), username: s.username || "", password: s.password || "" })); }, [id]);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = async (e) => {
@@ -35,6 +35,21 @@ export default function SupplierForm() {
           </div>
           <div><label className="label">ელ-ფოსტა</label><input className="input" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></div>
           <div><label className="label">მისამართი</label><textarea className="input" rows={2} value={form.address} onChange={(e) => set("address", e.target.value)} /></div>
+          
+          <div className="border-t border-gray-100 pt-5">
+            <h3 className="text-sm font-semibold text-gray-800 mb-3">სისტემაში შესვლის ანგარიში (Supplier Login Account)</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="label">მომხმარებელი (Username)</label>
+                <input className="input" value={form.username} onChange={(e) => set("username", e.target.value)} autoComplete="new-username" />
+              </div>
+              <div>
+                <label className="label">პაროლი (Password)</label>
+                <input className="input" type="text" value={form.password} onChange={(e) => set("password", e.target.value)} autoComplete="new-password" />
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div><label className="label">მიწოდების ვადა (დღე)</label><input className="input" type="number" min="1" value={form.lead_time_days} onChange={(e) => set("lead_time_days", Number(e.target.value))} /></div>
             <div className="flex items-end pb-2">

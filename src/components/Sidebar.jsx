@@ -6,7 +6,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 
 const links = [
-  { to: "/",          label: "მთავარი",      icon: LayoutDashboard, roles: ['GM', 'Storekeeper', 'PurchasingOfficer', 'FinanceController', 'DeptHead'] },
+  { to: "/dashboard", label: "მთავარი",      icon: LayoutDashboard, roles: ['GM', 'Storekeeper', 'PurchasingOfficer', 'FinanceController', 'DeptHead'] },
   { to: "/tender",    label: "ტენდერები",    icon: FileSearch,      roles: ['GM', 'PurchasingOfficer', 'FinanceController'] },
   { to: "/special-offers", label: "სპეც. შეთავაზებები", icon: Sparkles, roles: ['GM', 'PurchasingOfficer'] },
   { to: "/tender-portal", label: "ტენდერები", icon: FileSearch,      roles: ['Supplier'] },
@@ -52,7 +52,7 @@ export default function Sidebar({ open }) {
             <NavLink
               key={to}
               to={to}
-              end={to === "/"}
+              end={to === "/dashboard"}
               className={({ isActive }) =>
                 `group flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium
                  transition-all duration-150 ${
