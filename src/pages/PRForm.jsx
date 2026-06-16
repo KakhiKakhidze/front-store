@@ -61,7 +61,7 @@ export default function PRForm() {
                   <select className="input col-span-4 bg-white" value={line.item_id} onChange={(e) => updateLine(i, "item_id", e.target.value)} required><option value="">აირჩიეთ ნივთი</option>{items.map((it) => <option key={it.id} value={it.id}>{it.code} — {it.name}</option>)}</select>
                   <input type="number" min="1" step="any" className="input col-span-2 bg-white" placeholder="რაოდ." value={line.qty_required} onChange={(e) => updateLine(i, "qty_required", e.target.value)} required />
                   <input type="number" step="0.01" className="input col-span-2 bg-white" placeholder="ერთ. ფასი" value={line.estimated_unit_cost} onChange={(e) => updateLine(i, "estimated_unit_cost", e.target.value)} />
-                  <select className="input col-span-3 bg-white" value={line.suggested_supplier_id} onChange={(e) => updateLine(i, "suggested_supplier_id", e.target.value)}><option value="">მომწოდებელი</option>{suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}{s.preferred ? " ★" : ""}</option>)}</select>
+                  <select className="input col-span-3 bg-white" value={line.suggested_supplier_id} onChange={(e) => updateLine(i, "suggested_supplier_id", e.target.value)}><option value="">მომწოდებელი</option>{suppliers.map((s) => <option key={s._id} value={s._id}>{s.name}{s.preferred ? " ★" : ""}</option>)}</select>
                   <div className="col-span-1 flex justify-center">{lines.length > 1 && <button type="button" onClick={() => removeLine(i)} className="text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>}</div>
                 </div>
               ))}

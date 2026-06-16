@@ -136,7 +136,9 @@ export default function TenderDetail() {
   const canFinanceApprove = (isFC || isGM) && tender?.status === "Evaluation" && !tender?.finance_approved_by;
   const canAward = (isGM || isPO) && tender?.status === "Evaluation";
   const canCancel = !["Awarded", "Cancelled"].includes(tender?.status);
-  const canEdit = isPO && ["Draft", "Published"].includes(tender?.status);
+  const age = tender ? Date.now() - new Date(tender.createdAt).getTime() : 0;
+  const isWithinOneHour = age < 60 * 60 * 1000;
+  const canEdit = (isPO || isGM) && (["Draft", "Published"].includes(tender?.status) || isWithinOneHour);
   const canRenew = (isPO || isGM) && ["Awarded", "Cancelled", "Closed", "Evaluation"].includes(tender?.status);
 
   const deadlinePassed = tender && new Date(tender.deadline) < new Date();

@@ -54,7 +54,7 @@ export default function POForm() {
         <p className="text-sm text-gray-400 mb-6">შექმენით შეკვეთა მომწოდებლისთვის</p>
         {error && <div className="mb-5 rounded-xl bg-red-50 border border-red-100 p-3.5 text-sm text-red-700 animate-slide-up">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div><label className="label">მომწოდებელი</label><select className="input" value={supplier_id} onChange={(e) => setSupplierId(e.target.value)} required><option value="">აირჩიეთ მომწოდებელი</option>{suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}{s.preferred ? " ★" : ""}</option>)}</select></div>
+          <div><label className="label">მომწოდებელი</label><select className="input" value={supplier_id} onChange={(e) => setSupplierId(e.target.value)} required><option value="">აირჩიეთ მომწოდებელი</option>{suppliers.map((s) => <option key={s._id} value={s._id}>{s.name}{s.preferred ? " ★" : ""}</option>)}</select></div>
           <div>
             <div className="flex items-center justify-between mb-3"><h3 className="label mb-0">შეკვეთის ხაზები</h3><button type="button" onClick={addLine} className="btn-ghost btn-sm"><Plus size={14} /> ხაზის დამატება</button></div>
             <div className="space-y-2">

@@ -1,23 +1,44 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../api";
-import { ArrowLeft, Save, Star } from "lucide-react";
+import { ArrowLeft, Save, Star, Trash2 } from "lucide-react";
 
 export default function SupplierForm() {
   const { id } = useParams();
-  const isEdit = Boolean(id);
+  const isEdit = Boolean(id) && id !== "undefined";
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", contact_person: "", phone: "", email: "", address: "", lead_time_days: 3, preferred: false, username: "", password: "" });
 
-  useEffect(() => { if (isEdit) api.get(`/suppliers/${id}`).then((s) => setForm({ ...s, preferred: Boolean(s.preferred), username: s.username || "", password: s.password || "" })); }, [id]);
+  useEffect(() => {
+    if (isEdit) {
+      api.get(`/suppliers/${id}`)
+        .then((s) => setForm({ ...s, preferred: Boolean(s.preferred), username: s.username || "", password: s.password || "" }))
+        .catch((err) => setError(err.message));
+    }
+  }, [id, isEdit]);
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(""); setSaving(true);
     try { if (isEdit) await api.put(`/suppliers/${id}`, form); else await api.post("/suppliers", form); navigate("/suppliers"); }
     catch (err) { setError(err.message); } finally { setSaving(false); }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm("ნამდვილად გსურთ მომწოდებლის წაშლა?")) return;
+    setError("");
+    setDeleting(true);
+    try {
+      await api.del(`/suppliers/${id}`);
+      navigate("/suppliers");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -60,9 +81,16 @@ export default function SupplierForm() {
               </label>
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-5 border-t border-gray-200">
-            <button type="button" onClick={() => navigate("/suppliers")} className="btn-secondary">გაუქმება</button>
-            <button type="submit" disabled={saving} className="btn-primary"><Save size={16} /> {saving ? "ინახება..." : "შენახვა"}</button>
+          <div className="flex justify-between items-center pt-5 border-t border-gray-200">
+            {isEdit ? (
+              <button type="button" onClick={handleDelete} disabled={saving || deleting} className="btn-danger">
+                <Trash2 size={16} /> წაშლა
+              </button>
+            ) : <div />}
+            <div className="flex gap-3">
+              <button type="button" onClick={() => navigate("/suppliers")} className="btn-secondary">გაუქმება</button>
+              <button type="submit" disabled={saving || deleting} className="btn-primary"><Save size={16} /> {saving ? "ინახება..." : "შენახვა"}</button>
+            </div>
           </div>
         </form>
       </div>

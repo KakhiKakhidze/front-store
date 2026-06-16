@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL || "https://back-store-dduh.onrender.com/api";
+const BASE = import.meta.env.VITE_API_URL || "/api";
 
 async function request(path, options = {}) {
   const user = JSON.parse(localStorage.getItem("hsms_user") || "{}");
