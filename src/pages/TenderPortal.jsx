@@ -27,6 +27,7 @@ export default function TenderPortal() {
   const [bidNotes, setBidNotes] = useState("");
   const [bidSaving, setBidSaving] = useState(false);
   const [bidError, setBidError] = useState("");
+  const [bidHasVat, setBidHasVat] = useState(false);
 
   const load = useCallback(async () => {
     if (!user?.supplier_id) { setLoading(false); return; }
@@ -47,19 +48,37 @@ export default function TenderPortal() {
 
   const openBidModal = (t) => {
     setSelectedTender(t);
-    // In a real app, we'd fetch the existing bid for this specific supplier if it exists
-    // For now, we'll initialize with tender items
-    setBidLines(t.items.map(it => ({
-      tender_item_id: it.id,
-      item_code: it.item_code,
-      item_name: it.item_name,
-      unit_of_measure: it.unit_of_measure,
-      qty_required: it.qty_required,
-      unit_price: "",
-      qty_offered: it.qty_required,
-      notes: ""
-    })));
-    setBidNotes("");
+    const existing = t.my_bid;
+    if (existing) {
+      setBidLines(t.items.map(it => {
+        const el = existing.lines.find(x => x.tender_item_id === it.id);
+        return {
+          tender_item_id: it.id,
+          item_code: it.item_code,
+          item_name: it.item_name,
+          unit_of_measure: it.unit_of_measure,
+          qty_required: it.qty_required,
+          unit_price: el ? el.unit_price : "",
+          qty_offered: el ? el.qty_offered : it.qty_required,
+          notes: el ? el.notes || "" : ""
+        };
+      }));
+      setBidNotes(existing.notes || "");
+      setBidHasVat(existing.has_vat || false);
+    } else {
+      setBidLines(t.items.map(it => ({
+        tender_item_id: it.id,
+        item_code: it.item_code,
+        item_name: it.item_name,
+        unit_of_measure: it.unit_of_measure,
+        qty_required: it.qty_required,
+        unit_price: "",
+        qty_offered: it.qty_required,
+        notes: ""
+      })));
+      setBidNotes("");
+      setBidHasVat(false);
+    }
     setBidError("");
     setBidModal(true);
   };
@@ -77,6 +96,7 @@ export default function TenderPortal() {
       await api.post(`/tender/${selectedTender.id}/bids`, {
         supplier_id: user.supplier_id,
         notes: bidNotes,
+        has_vat: bidHasVat,
         lines: bidLines.map(l => ({
           tender_item_id: l.tender_item_id,
           unit_price: Number(l.unit_price),
@@ -136,6 +156,15 @@ export default function TenderPortal() {
               </div>
 
               <div className="flex flex-col items-center justify-center gap-3 min-w-[200px] border-l border-gray-100 pl-6">
+                {t.my_bid && (
+                  <div className="text-center w-full p-2.5 bg-emerald-50 rounded-xl border border-emerald-100 group-hover:bg-emerald-100/30 transition-colors">
+                    <p className="text-[9px] font-bold text-emerald-800 uppercase tracking-wider mb-0.5">თქვენი შეთავაზება</p>
+                    <p className="text-base font-mono font-black text-emerald-700">{fmt(t.my_bid.total_amount)}</p>
+                    <span className="inline-block text-[9px] font-bold text-emerald-600 bg-white border border-emerald-200 px-1.5 py-0.5 rounded-md mt-1">
+                      {t.my_bid.has_vat ? "დღგ-თი" : "დღგ-ს გარეშე"}
+                    </span>
+                  </div>
+                )}
                 <div className="text-center w-full p-3 bg-gray-50 rounded-xl border border-gray-100 group-hover:bg-brand-50/30 transition-colors">
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">მინიმალური შეთავაზება</p>
                   <p className="text-xl font-mono font-black text-emerald-600 flex items-center justify-center gap-2">
@@ -147,9 +176,13 @@ export default function TenderPortal() {
                 
                 <button 
                   onClick={() => openBidModal(t)}
-                  className="btn-primary w-full shadow-lg shadow-brand-500/20"
+                  className={`w-full shadow-lg transition-all ${
+                    t.my_bid 
+                      ? "btn-secondary shadow-gray-200/20" 
+                      : "btn-primary shadow-brand-500/20"
+                  }`}
                 >
-                  <ExternalLink size={16} /> მონაწილეობა
+                  <ExternalLink size={16} /> {t.my_bid ? "რედაქტირება" : "მონაწილეობა"}
                 </button>
               </div>
             </div>
@@ -228,6 +261,34 @@ export default function TenderPortal() {
                   </tr>
                 </tfoot>
               </table>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">დღგ-ს სტატუსი</label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setBidHasVat(false)}
+                className={`p-3 rounded-xl border font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${
+                  !bidHasVat
+                    ? "border-brand-500 bg-brand-50 text-brand-700 shadow-sm"
+                    : "border-gray-200 hover:border-gray-300 text-gray-600 bg-white"
+                }`}
+              >
+                დღგ-ს გარეშე
+              </button>
+              <button
+                type="button"
+                onClick={() => setBidHasVat(true)}
+                className={`p-3 rounded-xl border font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${
+                  bidHasVat
+                    ? "border-brand-500 bg-brand-50 text-brand-700 shadow-sm"
+                    : "border-gray-200 hover:border-gray-300 text-gray-600 bg-white"
+                }`}
+              >
+                დღგ-თი
+              </button>
             </div>
           </div>
 

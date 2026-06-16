@@ -38,6 +38,7 @@ export function exportWinnerDeclaration(tender) {
   addStyledRow(rows, "სახელი:", tender.winner_name || "—");
   if (winnerBid) {
     addStyledRow(rows, "შეთავაზების თარიღი:", fmtDateTime(winnerBid.submitted_at));
+    addStyledRow(rows, "დღგ-ს სტატუსი:", winnerBid.has_vat ? "დღგ-თი" : "დღგ-ს გარეშე");
     addStyledRow(rows, "შენიშვნები:", winnerBid.notes || "—");
   }
   addStyledRow(rows, "");
@@ -179,6 +180,13 @@ export function exportBidComparison(tender) {
     });
     addStyledRow(rows, ...totalRow);
 
+    // VAT Status row
+    const vatRow = ["", "", "", "დღგ-ს სტატუსი:"];
+    sortedBids.forEach((b) => {
+      vatRow.push("", "", b.has_vat ? "დღგ-თი" : "დღგ-ს გარეშე");
+    });
+    addStyledRow(rows, ...vatRow);
+
     // Variance from lowest
     const varianceRow = ["", "", "", "% დაბლიდან:"];
     sortedBids.forEach((b) => {
@@ -216,13 +224,14 @@ export function exportBidComparison(tender) {
 
     addStyledRow(rows, "");
     addStyledRow(rows, "შეთავაზებების რანჟირება / RANKING");
-    addStyledRow(rows, "ადგილი", "მომწოდებელი", "ჯამური თანხა", "% დაბლიდან", "შეტანის თარიღი", "მოგებული პოზიციები", "შენიშვნა");
+    addStyledRow(rows, "ადგილი", "მომწოდებელი", "დღგ-ს სტატუსი", "ჯამური თანხა", "% დაბლიდან", "შეტანის თარიღი", "მოგებული პოზიციები", "შენიშვნა");
     sortedBids.forEach((b, idx) => {
       const variance = lowestTotal > 0 ? ((b.total_amount - lowestTotal) / lowestTotal) * 100 : 0;
       addStyledRow(
         rows,
         idx + 1,
         b.supplier_name,
+        b.has_vat ? "დღგ-თი" : "დღგ-ს გარეშე",
         Number(b.total_amount),
         idx === 0 ? "—" : `+${variance.toFixed(1)}%`,
         fmtDateTime(b.submitted_at),

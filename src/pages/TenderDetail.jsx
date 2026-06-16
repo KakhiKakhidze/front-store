@@ -33,6 +33,7 @@ export default function TenderDetail() {
   const [bidLines, setBidLines] = useState([]);
   const [bidSaving, setBidSaving] = useState(false);
   const [bidError, setBidError] = useState("");
+  const [bidHasVat, setBidHasVat] = useState(false);
 
   // Award modal
   const [awardModal, setAwardModal] = useState(false);
@@ -76,8 +77,10 @@ export default function TenderDetail() {
         if (el) { l.unit_price = el.unit_price; l.qty_offered = el.qty_offered; l.notes = el.notes || ""; }
       });
       setBidNotes(existing.notes || "");
+      setBidHasVat(existing.has_vat || false);
     } else {
       setBidNotes("");
+      setBidHasVat(false);
     }
     setBidLines(lines);
     setBidSupplier(supplier);
@@ -98,6 +101,7 @@ export default function TenderDetail() {
       await api.post(`/tender/${id}/bids`, {
         supplier_id: bidSupplier.supplier_id,
         notes: bidNotes,
+        has_vat: bidHasVat,
         lines: bidLines.map((l) => ({
           tender_item_id: l.tender_item_id,
           unit_price: Number(l.unit_price),
@@ -447,8 +451,15 @@ export default function TenderDetail() {
                     {hasBid && (
                       <div className="text-right">
                         <span className="font-mono font-bold text-sm text-gray-700 block">{fmt(bid.total_amount)}</span>
+                        <span className={`inline-block text-[9px] font-bold px-1.5 py-0.5 rounded ${
+                          bid.has_vat 
+                            ? "bg-violet-50 text-violet-700 border border-violet-100" 
+                            : "bg-gray-100 text-gray-600 border border-gray-200"
+                        }`}>
+                          {bid.has_vat ? "დღგ-თი" : "დღგ-ს გარეშე"}
+                        </span>
                         {!isLowest && overLowest > 0 && (
-                          <span className="text-[11px] text-red-500 font-semibold font-mono">
+                          <span className="text-[11px] text-red-500 font-semibold font-mono block mt-1">
                             +{fmt(overLowest)} ({overLowestPct.toFixed(1)}%)
                           </span>
                         )}
@@ -530,7 +541,14 @@ export default function TenderDetail() {
                   <td className="px-4 py-3 font-bold text-gray-600">ჯამი</td>
                   {rankedBids.map((b) => (
                     <td key={b.id} className={`px-4 py-3 text-right font-mono font-extrabold ${lowestBid?.id === b.id ? "text-emerald-600" : "text-gray-600"}`}>
-                      {fmt(b.total_amount)}
+                      <div>{fmt(b.total_amount)}</div>
+                      <span className={`inline-block text-[9px] font-bold px-1.5 py-0.5 rounded mt-1 ${
+                        b.has_vat 
+                          ? "bg-violet-50 text-violet-700 border border-violet-100" 
+                          : "bg-gray-100 text-gray-600 border border-gray-200"
+                      }`}>
+                        {b.has_vat ? "დღგ-თი" : "დღგ-ს გარეშე"}
+                      </span>
                     </td>
                   ))}
                 </tr>
@@ -622,6 +640,33 @@ export default function TenderDetail() {
                   </tr>
                 </tfoot>
               </table>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">დღგ-ს სტატუსი</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setBidHasVat(false)}
+                  className={`p-3 rounded-xl border font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${
+                    !bidHasVat
+                      ? "border-brand-500 bg-brand-50 text-brand-700 shadow-sm"
+                      : "border-gray-200 hover:border-gray-300 text-gray-600 bg-white"
+                  }`}
+                >
+                  დღგ-ს გარეშე
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBidHasVat(true)}
+                  className={`p-3 rounded-xl border font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${
+                    bidHasVat
+                      ? "border-brand-500 bg-brand-50 text-brand-700 shadow-sm"
+                      : "border-gray-200 hover:border-gray-300 text-gray-600 bg-white"
+                  }`}
+                >
+                  დღგ-თი
+                </button>
+              </div>
             </div>
             <div>
               <label className="label">შენიშვნები</label>
