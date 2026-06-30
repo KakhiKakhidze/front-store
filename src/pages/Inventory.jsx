@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import DataTable from "../components/DataTable";
 import Badge from "../components/Badge";
-import { Plus, Search, SlidersHorizontal, AlertTriangle, FileSearch } from "lucide-react";
+import { Plus, Search, SlidersHorizontal, AlertTriangle, FileSearch, Edit2 } from "lucide-react";
 
 export default function Inventory() {
   const [items, setItems] = useState([]);
@@ -66,16 +66,28 @@ export default function Inventory() {
     {
       key: "actions", label: "",
       render: (_, row) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate("/tender/new", { state: { fromAlert: row } });
-          }}
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-brand-600 hover:bg-brand-50 transition-colors"
-        >
-          <FileSearch size={13} />
-          ტენდერი
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/inventory/${row._id}/edit`);
+            }}
+            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-brand-600 hover:bg-brand-50 transition-colors"
+          >
+            <Edit2 size={13} />
+            რედაქტირება
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/tender/new", { state: { fromAlert: row } });
+            }}
+            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-brand-600 hover:bg-brand-50 transition-colors"
+          >
+            <FileSearch size={13} />
+            ტენდერი
+          </button>
+        </div>
       ),
     },
   ];
@@ -107,7 +119,7 @@ export default function Inventory() {
             <SlidersHorizontal size={14} className="text-gray-400" />
             <select className="input w-auto" value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="">ყველა კატეგორია</option>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
             </select>
           </div>
           <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
@@ -130,7 +142,7 @@ export default function Inventory() {
         <DataTable
           columns={columns}
           data={items}
-          onRowClick={(row) => navigate("/tender/new", { state: { fromAlert: row } })}
+          onRowClick={(row) => navigate(`/inventory/${row._id}/edit`)}
           emptyMessage="ინვენტარის ნივთები ფილტრებს არ შეესაბამება."
         />
       )}

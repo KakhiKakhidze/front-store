@@ -242,7 +242,7 @@ export default function Dashboard() {
           {data.recentTenders?.length > 0 && (
             <div className="space-y-1">
               {data.recentTenders.slice(0, 3).map((t) => (
-                <Link key={t.id} to={`/tender/${t.id}`}
+                <Link key={t.id || t._id} to={`/tender/${t.id || t._id}`}
                   className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="font-mono text-[10px] text-gray-400 shrink-0">{t.tender_number}</span>
@@ -366,7 +366,7 @@ export default function Dashboard() {
               const s = mvStyle[mv.movement_type] || mvStyle.Adjustment;
               const Icon = s.icon;
               return (
-                <div key={mv.id}
+                <div key={mv.id || mv._id}
                   className="flex items-center gap-4 px-6 py-3 hover:bg-gray-50/50 transition-colors animate-slide-up"
                   style={{ animationDelay: `${i * 40}ms`, animationFillMode: "both" }}>
                   <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${s.cls}`}>
@@ -414,7 +414,7 @@ export default function Dashboard() {
                   <p className="text-xs font-medium text-gray-600">ყველა მარაგის დონე ჯანსაღია</p>
                 </div>
               ) : data.lowStockItems.slice(0, 5).map((item) => (
-                <div key={item.id} className="flex items-center gap-3 px-6 py-2.5">
+                <div key={item.id || item._id} className="flex items-center gap-3 px-6 py-2.5">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-gray-900 truncate">{item.name}</p>
                     <p className="text-[10px] text-gray-400">{item.code}</p>

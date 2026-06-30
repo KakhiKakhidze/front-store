@@ -76,7 +76,7 @@ export default function LowStockBanner() {
               const isWarn = item.current_qty >= 10 && item.current_qty < 25;
               return (
                 <Link
-                  key={item.id}
+                  key={item.id || item._id}
                   to="/tender/new"
                   state={{ fromAlert: item }}
                   className="flex items-center gap-3 px-4 py-2.5 hover:bg-amber-100/50 transition-colors"

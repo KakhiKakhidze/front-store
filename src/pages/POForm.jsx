@@ -23,7 +23,7 @@ export default function POForm() {
     setLines((l) => l.map((line, idx) => {
       if (idx !== i) return line;
       const u = { ...line, [key]: value };
-      if (key === "item_id") { const it = items.find((x) => x.id === value); if (it) u.unit_price = it.unit_cost; }
+      if (key === "item_id") { const it = items.find((x) => x._id === value); if (it) u.unit_price = it.unit_cost; }
       return u;
     }));
   };
@@ -60,7 +60,7 @@ export default function POForm() {
             <div className="space-y-2">
               {lines.map((line, i) => (
                 <div key={i} className="grid grid-cols-12 gap-2 items-center p-3 bg-gray-50/80 rounded-xl border border-gray-200">
-                  <select className="input col-span-5 bg-white" value={line.item_id} onChange={(e) => updateLine(i, "item_id", e.target.value)} required><option value="">აირჩიეთ ნივთი</option>{items.map((it) => <option key={it.id} value={it.id}>{it.code} — {it.name}</option>)}</select>
+                  <select className="input col-span-5 bg-white" value={line.item_id} onChange={(e) => updateLine(i, "item_id", e.target.value)} required><option value="">აირჩიეთ ნივთი</option>{items.map((it) => <option key={it._id} value={it._id}>{it.code} — {it.name}</option>)}</select>
                   <input type="number" min="1" step="any" className="input col-span-2 bg-white" placeholder="რაოდ." value={line.qty_ordered} onChange={(e) => updateLine(i, "qty_ordered", e.target.value)} required />
                   <input type="number" step="0.01" className="input col-span-2 bg-white" placeholder="ფასი" value={line.unit_price} onChange={(e) => updateLine(i, "unit_price", e.target.value)} required />
                   <div className="col-span-2 text-right font-mono text-sm font-semibold text-gray-600">${((Number(line.qty_ordered) || 0) * (Number(line.unit_price) || 0)).toFixed(2)}</div>

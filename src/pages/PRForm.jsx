@@ -22,7 +22,7 @@ export default function PRForm() {
     setLines((l) => l.map((line, idx) => {
       if (idx !== i) return line;
       const u = { ...line, [key]: value };
-      if (key === "item_id") { const it = items.find((x) => x.id === value); if (it) u.estimated_unit_cost = it.unit_cost; }
+      if (key === "item_id") { const it = items.find((x) => x._id === value); if (it) u.estimated_unit_cost = it.unit_cost; }
       return u;
     }));
   };
@@ -58,7 +58,7 @@ export default function PRForm() {
             <div className="space-y-2">
               {lines.map((line, i) => (
                 <div key={i} className="grid grid-cols-12 gap-2 items-center p-3 bg-gray-50/80 rounded-xl border border-gray-200">
-                  <select className="input col-span-4 bg-white" value={line.item_id} onChange={(e) => updateLine(i, "item_id", e.target.value)} required><option value="">აირჩიეთ ნივთი</option>{items.map((it) => <option key={it.id} value={it.id}>{it.code} — {it.name}</option>)}</select>
+                  <select className="input col-span-4 bg-white" value={line.item_id} onChange={(e) => updateLine(i, "item_id", e.target.value)} required><option value="">აირჩიეთ ნივთი</option>{items.map((it) => <option key={it._id} value={it._id}>{it.code} — {it.name}</option>)}</select>
                   <input type="number" min="1" step="any" className="input col-span-2 bg-white" placeholder="რაოდ." value={line.qty_required} onChange={(e) => updateLine(i, "qty_required", e.target.value)} required />
                   <input type="number" step="0.01" className="input col-span-2 bg-white" placeholder="ერთ. ფასი" value={line.estimated_unit_cost} onChange={(e) => updateLine(i, "estimated_unit_cost", e.target.value)} />
                   <select className="input col-span-3 bg-white" value={line.suggested_supplier_id} onChange={(e) => updateLine(i, "suggested_supplier_id", e.target.value)}><option value="">მომწოდებელი</option>{suppliers.map((s) => <option key={s._id} value={s._id}>{s.name}{s.preferred ? " ★" : ""}</option>)}</select>

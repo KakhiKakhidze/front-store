@@ -24,7 +24,7 @@ export default function GRNForm() {
     setSelectedPO(po);
     setLines(
       po.lines.filter((l) => l.qty_received < l.qty_ordered).map((l) => ({
-        item_id: l.item_id, po_line_id: l.id,
+        item_id: l.item_id, po_line_id: l._id,
         item_name: `${l.item_code} - ${l.item_name}`, unit: l.unit_of_measure,
         ordered: l.qty_ordered, already_received: l.qty_received,
         qty_received: l.qty_ordered - l.qty_received, unit_price: l.unit_price,

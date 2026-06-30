@@ -98,7 +98,7 @@ export default function StockAlerts() {
                   const u = urgency(item.current_qty);
                   return (
                     <Link
-                      key={item.id}
+                      key={item.id || item._id}
                       to="/tender/new"
                       state={{ fromAlert: item }}
                       onClick={() => setOpen(false)}

@@ -43,7 +43,7 @@ export default function SRFForm() {
         {error && <div className="mb-5 rounded-xl bg-red-50 border border-red-100 dark:bg-red-950/30 dark:border-red-900/50 dark:text-red-400 p-3.5 text-sm text-red-700 animate-slide-up">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
-            <div><label className="label">მოთხოვნის განყოფილება</label><select className="input" value={department_id} onChange={(e) => setDeptId(e.target.value)} required><option value="">აირჩიეთ განყოფილება</option>{departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select></div>
+            <div><label className="label">მოთხოვნის განყოფილება</label><select className="input" value={department_id} onChange={(e) => setDeptId(e.target.value)} required><option value="">აირჩიეთ განყოფილება</option>{departments.map((d) => <option key={d._id} value={d._id}>{d.name}</option>)}</select></div>
             <div><label className="label">მომთხოვნი</label><input className="input" value={user.full_name} disabled /></div>
           </div>
           <div>
@@ -53,12 +53,12 @@ export default function SRFForm() {
             </div>
             <div className="space-y-2">
               {lines.map((line, i) => {
-                const sel = items.find((it) => it.id === line.item_id);
+                const sel = items.find((it) => it._id === line.item_id);
                 return (
                   <div key={i} className="flex items-center gap-3 p-3 bg-gray-50/80 dark:bg-dark-hover/80 rounded-xl border border-gray-100 dark:border-dark-border">
                     <select className="input flex-1 bg-white dark:bg-dark-input" value={line.item_id} onChange={(e) => updateLine(i, "item_id", e.target.value)} required>
                       <option value="">აირჩიეთ ნივთი</option>
-                      {items.map((it) => <option key={it.id} value={it.id}>{it.code} — {it.name} (ხელმისაწვდ.: {it.current_qty} {it.unit_of_measure})</option>)}
+                      {items.map((it) => <option key={it._id} value={it._id}>{it.code} — {it.name} (ხელმისაწვდ.: {it.current_qty} {it.unit_of_measure})</option>)}
                     </select>
                     <input type="number" min="0.1" step="any" className="input w-28 bg-white dark:bg-dark-input" placeholder="რაოდ." value={line.qty_requested} onChange={(e) => updateLine(i, "qty_requested", e.target.value)} required />
                     {sel && <span className="text-xs text-gray-400 dark:text-gray-500 w-10 shrink-0">{sel.unit_of_measure}</span>}

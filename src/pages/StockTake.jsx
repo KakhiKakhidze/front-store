@@ -24,7 +24,7 @@ export default function StockTake() {
   const handleCreate = async () => {
     setCreating(true);
     try {
-      const result = await api.post("/stocktake", { count_type: countType, performed_by: user.id, category_id: countType === "Cycle" ? Number(categoryId) : undefined, notes });
+      const result = await api.post("/stocktake", { count_type: countType, performed_by: user.id, category_id: countType === "Cycle" ? categoryId : undefined, notes });
       setShowNew(false); navigate(`/stocktake/${result.id}`);
     } catch (err) { alert(err.message); }
     finally { setCreating(false); }
@@ -54,7 +54,7 @@ export default function StockTake() {
       <Modal open={showNew} onClose={() => setShowNew(false)} title="ინვენტარიზაციის დაწყება">
         <div className="space-y-5">
           <div><label className="label">დათვლის ტიპი</label><select className="input" value={countType} onChange={(e) => setCountType(e.target.value)}><option value="Full">სრული ფიზიკური დათვლა</option><option value="Cycle">ციკლური დათვლა (კატეგორიით)</option></select></div>
-          {countType === "Cycle" && <div><label className="label">კატეგორია</label><select className="input" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required><option value="">აირჩიეთ კატეგორია</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>}
+          {countType === "Cycle" && <div><label className="label">კატეგორია</label><select className="input" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required><option value="">აირჩიეთ კატეგორია</option>{categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}</select></div>}
           <div><label className="label">შენიშვნები</label><textarea className="input" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} /></div>
           <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-dark-border">
             <button onClick={() => setShowNew(false)} className="btn-secondary">გაუქმება</button>

@@ -76,7 +76,7 @@ export default function Reports() {
           <div><label className="label">პერიოდი</label><select className="input w-auto" value={filters.days} onChange={(e) => setFilters((f) => ({ ...f, days: e.target.value }))}><option value="7">7 დღე</option><option value="14">14 დღე</option><option value="30">30 დღე</option><option value="60">60 დღე</option><option value="90">90 დღე</option></select></div>
         )}
         {tab === "consumption" && (
-          <div><label className="label">განყოფილება</label><select className="input w-auto" value={filters.department_id} onChange={(e) => setFilters((f) => ({ ...f, department_id: e.target.value }))}><option value="">ყველა განყოფილება</option>{departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select></div>
+          <div><label className="label">განყოფილება</label><select className="input w-auto" value={filters.department_id} onChange={(e) => setFilters((f) => ({ ...f, department_id: e.target.value }))}><option value="">ყველა განყოფილება</option>{departments.map((d) => <option key={d._id} value={d._id}>{d.name}</option>)}</select></div>
         )}
         <button onClick={fetchReport} className="btn-primary btn-sm"><RefreshCw size={13} /> გენერაცია</button>
       </div>
